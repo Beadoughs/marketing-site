@@ -1231,6 +1231,10 @@ h1, h2, h3 {
   font-weight: 500;
 }
 
+.form-note--error {
+  color: #f0a8a8;
+}
+
 /* ===== Footer ===== */
 .footer {
   padding: 3rem 0 2.25rem;

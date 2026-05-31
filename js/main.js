@@ -210,10 +210,46 @@ if (focusSelect) {
   });
 }
 
-// Contact form → team@rcmarketingtas.com via FormSubmit
+// Contact form → team@rcmarketingtas.com via Resend (Vercel serverless API)
 const form = document.getElementById("contact-form");
 const formNote = document.getElementById("form-note");
-const FORM_ENDPOINT = "https://formsubmit.co/ajax/team@rcmarketingtas.com";
+const FORM_FALLBACK_EMAIL = "team@rcmarketingtas.com";
+const FORM_MAILTO = `mailto:${FORM_FALLBACK_EMAIL}?subject=${encodeURIComponent("Website enquiry")}`;
+
+function isFormDevHost() {
+  const host = window.location.hostname;
+  return host === "localhost" || host === "127.0.0.1";
+}
+
+/** Same-origin API URL; works on Vercel root deploy and GitHub Pages project subpaths. */
+function getFormEndpoint() {
+  const override = document.querySelector('meta[name="contact-api"]')?.content?.trim();
+  if (override) return override;
+  return new URL("api/send-enquiry", window.location.href).href;
+}
+
+function logFormDev(label, payload) {
+  if (!isFormDevHost()) return;
+  console.error(`[contact-form] ${label}`, payload);
+}
+
+function messageForFailedSubmit(response, data) {
+  if (data?.error) return data.error;
+
+  if (response.status === 404) {
+    return `The enquiry form is not available on this host (API not found). Please email ${FORM_FALLBACK_EMAIL} or deploy this site to Vercel with the serverless API enabled.`;
+  }
+
+  if (response.status === 503) {
+    return `The enquiry form is not set up yet (missing email configuration). Please email ${FORM_FALLBACK_EMAIL}.`;
+  }
+
+  if (response.status === 502) {
+    return `We could not send your enquiry (email provider error). Please email ${FORM_FALLBACK_EMAIL}.`;
+  }
+
+  return `Something went wrong — please try again or email ${FORM_FALLBACK_EMAIL}.`;
+}
 
 if (form) {
   form.addEventListener("submit", async (e) => {
@@ -221,9 +257,11 @@ if (form) {
 
     const btn = form.querySelector("button[type=submit]");
     const btnDefault = btn.innerHTML;
+    const endpoint = getFormEndpoint();
     btn.disabled = true;
     btn.textContent = "Sending…";
     formNote.hidden = true;
+    formNote.classList.remove("form-note--error");
     formNote.textContent = "Thank you — we'll be in touch shortly.";
 
     const payload = {
@@ -232,15 +270,11 @@ if (form) {
       phone: form.phone.value.trim(),
       business: form.business.value.trim(),
       focus: form.focus.value,
-      _subject: "New website enquiry — RC Marketing",
-      _template: "table",
-      _captcha: "false",
+      website: form.website?.value?.trim() || "",
     };
 
-    if (payload.email) payload._replyto = payload.email;
-
     try {
-      const response = await fetch(FORM_ENDPOINT, {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -249,7 +283,28 @@ if (form) {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error("Submit failed");
+      const rawText = await response.text();
+      let data = {};
+      if (rawText) {
+        try {
+          data = JSON.parse(rawText);
+        } catch {
+          data = {};
+        }
+      }
+
+      if (!response.ok) {
+        logFormDev("submit failed", {
+          endpoint,
+          status: response.status,
+          statusText: response.statusText,
+          body: data,
+          raw: rawText.slice(0, 500),
+        });
+        const err = new Error(messageForFailedSubmit(response, data));
+        if (data.details && isFormDevHost()) err.details = data.details;
+        throw err;
+      }
 
       formNote.hidden = false;
       form.reset();
@@ -257,11 +312,33 @@ if (form) {
       sessionStorage.removeItem("rc-focus");
       btn.textContent = "Request Sent";
       stickyCta?.classList.remove("visible");
-    } catch {
+    } catch (err) {
       btn.disabled = false;
       btn.innerHTML = btnDefault;
-      formNote.textContent = "Something went wrong — please try again or email team@rcmarketingtas.com.";
+      logFormDev("request error", {
+        endpoint: getFormEndpoint(),
+        message: err.message,
+        details: err.details,
+        cause: err.cause,
+      });
+
+      let note =
+        err.message ||
+        `Something went wrong — please try again or email ${FORM_FALLBACK_EMAIL}.`;
+      if (err.details && isFormDevHost()) {
+        note += ` (${err.details})`;
+      }
+      formNote.textContent = note;
+      formNote.classList.add("form-note--error");
       formNote.hidden = false;
+
+      if (isFormDevHost() && !form.querySelector(".form-fallback-link")) {
+        const link = document.createElement("a");
+        link.className = "form-fallback-link";
+        link.href = FORM_MAILTO;
+        link.textContent = `Email ${FORM_FALLBACK_EMAIL} instead`;
+        formNote.after(link);
+      }
     }
   });
 }

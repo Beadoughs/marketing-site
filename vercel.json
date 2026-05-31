@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "functions": {
+    "api/send-enquiry.js": {
+      "memory": 128,
+      "maxDuration": 10
+    }
+  }
+}
