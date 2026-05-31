@@ -1,22 +1,19 @@
-# Precision Windscreens
+# Raquel Cuevas Marketing
 
-Marketing website for Precision Windscreens — vehicle glass repair, replacement and mobile auto glass services. Built with plain HTML, CSS, and JavaScript (no build step).
-
-Inspired by the layout and UX of [O'Brien](https://www.obrien.com.au/).
+Premium marketing agency website for Tasmanian businesses. Built with plain HTML, CSS, and JavaScript — no build step required.
 
 ## Sections
 
-1. Emergency call bar + header navigation
-2. Hero with service finder (select service + location)
-3. Service cards (repair, replacement, mobile, ADAS)
-4. Customer reviews carousel
-5. Why choose us
-6. Find a local expert CTA banner
-7. Commitments tabs (service, community, people, environment)
-8. Useful links
-9. FAQ accordion
-10. Booking / contact form
-11. Footer
+1. Hero with dynamic video background
+2. Why Businesses Choose Us (trust signals)
+3. The Problem (visual storytelling)
+4. Services (6 premium cards)
+5. How We Grow Businesses (interactive funnel)
+6. Tasmanian Advantage (local knowledge + map)
+7. Founder Story (Raquel Cuevas)
+8. Client Results (case study cards)
+9. FAQ
+10. Final CTA with booking form
 
 ## Run locally
 
@@ -27,12 +24,10 @@ python3 -m http.server 8080
 
 ## Customize
 
-- **Phone number** — Update `1800 PRE WIND` / `1800737463` throughout `index.html`
-- **Email** — Change `hello@precisionwindscreens.com.au` in the footer
-- **Booking form** — Wire `js/main.js` to Formspree, your CRM, or a backend API
-- **Hero image** — Replace the Unsplash URL in `index.html` with your own photography
-- **Reviews** — Update with real customer testimonials
-- **Locations** — Add a locations page or integrate a store locator
+- **Booking form** — Wire `js/main.js` to Formspree, Calendly, or your CRM
+- **Hero video** — Replace the Pexels source in `index.html` with your own Tasmania footage
+- **Founder photo** — Swap the Unsplash placeholder with Raquel's professional headshot
+- **Case studies** — Update with real client names and metrics (with permission)
 
 ## Structure
 
@@ -41,6 +36,5 @@ marketing-site/
 ├── index.html
 ├── css/styles.css
 ├── js/main.js
-├── assets/logo.svg
 └── README.md
 ```

@@ -1,14 +1,22 @@
 const header = document.getElementById("header");
 const hero = document.querySelector(".hero");
-const stickyCall = document.getElementById("sticky-call");
+const stickyCta = document.getElementById("sticky-cta");
+const contactSection = document.getElementById("contact");
 
-// Header scroll state
+// Header state
 function updateHeader() {
-  header.classList.toggle("scrolled", window.scrollY > 20);
+  const heroBottom = hero ? hero.offsetHeight : 0;
+  const scrolled = window.scrollY > 40;
+  const inHero = window.scrollY < heroBottom - 100;
+  const menuOpen = document.querySelector(".nav-links.open");
 
-  if (stickyCall && hero) {
-    const showSticky = window.scrollY > hero.offsetHeight * 0.5;
-    stickyCall.classList.toggle("visible", showSticky);
+  header.classList.toggle("scrolled", scrolled);
+  header.classList.toggle("hero-visible", inHero && !menuOpen);
+
+  if (stickyCta && contactSection) {
+    const contactTop = contactSection.offsetTop;
+    const showSticky = window.scrollY > heroBottom * 0.6 && window.scrollY < contactTop - 200;
+    stickyCta.classList.toggle("visible", showSticky);
   }
 }
 
@@ -24,6 +32,7 @@ navToggle.addEventListener("click", () => {
   navToggle.classList.toggle("active", isOpen);
   navToggle.setAttribute("aria-expanded", isOpen);
   navToggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+  updateHeader();
 });
 
 navLinks.querySelectorAll("a").forEach((link) => {
@@ -31,6 +40,7 @@ navLinks.querySelectorAll("a").forEach((link) => {
     navLinks.classList.remove("open");
     navToggle.classList.remove("active");
     navToggle.setAttribute("aria-expanded", "false");
+    updateHeader();
   });
 });
 
@@ -44,132 +54,122 @@ const revealObserver = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+  { threshold: 0.08, rootMargin: "0px 0px -60px 0px" }
 );
 
 document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
 
 document.querySelectorAll(".hero .reveal").forEach((el, i) => {
-  el.style.transitionDelay = `${0.15 + i * 0.1}s`;
+  el.style.transitionDelay = `${0.2 + i * 0.1}s`;
   requestAnimationFrame(() => el.classList.add("visible"));
 });
 
-// Service finder
-const serviceOptions = document.querySelectorAll(".service-option");
-const serviceError = document.getElementById("service-error");
-const finderSubmit = document.getElementById("finder-submit");
-const serviceTypeSelect = document.getElementById("service-type");
+// Parallax
+const parallaxLayers = document.querySelectorAll("[data-parallax]");
+let ticking = false;
 
-let selectedService = "repair";
+function updateParallax() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-serviceOptions.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    serviceOptions.forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-    selectedService = btn.dataset.service;
-    serviceError.hidden = true;
+  const scrollY = window.scrollY;
+  parallaxLayers.forEach((layer) => {
+    const speed = parseFloat(layer.dataset.parallax) || 0.2;
+    const rect = layer.getBoundingClientRect();
+    const center = rect.top + rect.height / 2;
+    const offset = (center - window.innerHeight / 2) * speed * -0.15;
+    layer.style.transform = `translate3d(0, ${offset}px, 0)`;
   });
-});
 
-finderSubmit.addEventListener("click", () => {
-  if (!selectedService) {
-    serviceError.hidden = false;
-    return;
+  if (hero && scrollY < hero.offsetHeight) {
+    const heroMedia = hero.querySelector(".hero-media");
+    if (heroMedia) heroMedia.style.transform = `translate3d(0, ${scrollY * 0.35}px, 0)`;
   }
 
-  setServiceType(selectedService);
-  sessionStorage.setItem("pw-service", selectedService);
-  document.getElementById("book").scrollIntoView({ behavior: "smooth" });
-});
-
-// Service card links → pre-fill form
-function setServiceType(serviceId) {
-  if (!serviceTypeSelect || !serviceId) return;
-  const option = serviceTypeSelect.querySelector(`option[value="${serviceId}"]`);
-  if (!option) return;
-  serviceTypeSelect.value = serviceId;
-  serviceTypeSelect.classList.add("prefilled");
+  ticking = false;
 }
 
-document.querySelectorAll("[data-service]").forEach((link) => {
-  link.addEventListener("click", () => {
-    setServiceType(link.dataset.service);
-    sessionStorage.setItem("pw-service", link.dataset.service);
-  });
-});
-
-if (serviceTypeSelect) {
-  const saved = sessionStorage.getItem("pw-service");
-  if (saved) setServiceType(saved);
-
-  serviceTypeSelect.addEventListener("change", () => {
-    serviceTypeSelect.classList.toggle("prefilled", serviceTypeSelect.value !== "");
-  });
-}
-
-// Reviews carousel
-const reviewsTrack = document.getElementById("reviews-track");
-const reviewPrev = document.getElementById("review-prev");
-const reviewNext = document.getElementById("review-next");
-const reviewDots = document.getElementById("review-dots");
-
-if (reviewsTrack) {
-  const reviews = reviewsTrack.querySelectorAll(".review-card");
-  let currentReview = 0;
-  let autoplayTimer;
-
-  reviews.forEach((_, i) => {
-    const dot = document.createElement("button");
-    dot.className = `review-dot${i === 0 ? " active" : ""}`;
-    dot.setAttribute("aria-label", `Go to review ${i + 1}`);
-    dot.addEventListener("click", () => goToReview(i));
-    reviewDots.appendChild(dot);
-  });
-
-  const dots = reviewDots.querySelectorAll(".review-dot");
-
-  function goToReview(index) {
-    currentReview = ((index % reviews.length) + reviews.length) % reviews.length;
-    reviewsTrack.style.transform = `translateX(-${currentReview * 100}%)`;
-    dots.forEach((d, i) => d.classList.toggle("active", i === currentReview));
+window.addEventListener("scroll", () => {
+  if (!ticking) {
+    requestAnimationFrame(updateParallax);
+    ticking = true;
   }
+}, { passive: true });
 
-  function startAutoplay() {
-    clearInterval(autoplayTimer);
-    autoplayTimer = setInterval(() => goToReview(currentReview + 1), 5000);
-  }
+updateParallax();
 
-  reviewPrev.addEventListener("click", () => {
-    goToReview(currentReview - 1);
-    startAutoplay();
-  });
+// Pipeline animation
+const pipeline = document.getElementById("pipeline");
+const pipelineFill = document.getElementById("pipeline-fill");
+const pipelineDetail = document.getElementById("pipeline-detail");
 
-  reviewNext.addEventListener("click", () => {
-    goToReview(currentReview + 1);
-    startAutoplay();
-  });
+const pipelineCopy = [
+  "Get found where customers search.",
+  "Earn confidence in three seconds.",
+  "Turn interest into conversations.",
+  "Leads arrive already convinced.",
+  "Customers become advocates.",
+  "Sustainable, compounding growth.",
+];
 
-  startAutoplay();
-}
+if (pipeline) {
+  const steps = pipeline.querySelectorAll(".pipeline-step");
+  let activeStep = -1;
 
-// Commitment tabs
-const tabBtns = document.querySelectorAll(".tab-btn");
-const tabPanels = document.querySelectorAll(".tab-panel");
+  function setPipelineStep(index) {
+    if (index === activeStep) return;
+    activeStep = index;
 
-tabBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const tab = btn.dataset.tab;
-
-    tabBtns.forEach((b) => {
-      b.classList.toggle("active", b === btn);
-      b.setAttribute("aria-selected", b === btn);
+    steps.forEach((step, i) => {
+      step.classList.toggle("active", i === index);
+      step.classList.toggle("passed", i < index);
     });
 
-    tabPanels.forEach((panel) => {
-      const isActive = panel.dataset.panel === tab;
-      panel.classList.toggle("active", isActive);
-      panel.hidden = !isActive;
-    });
+    if (pipelineFill) {
+      pipelineFill.style.width = `${((index + 1) / steps.length) * 100}%`;
+    }
+
+    if (pipelineDetail) {
+      pipelineDetail.style.opacity = "0";
+      setTimeout(() => {
+        pipelineDetail.textContent = pipelineCopy[index] || "";
+        pipelineDetail.style.opacity = "1";
+      }, 150);
+    }
+  }
+
+  const pipelineObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          let step = 0;
+          setPipelineStep(0);
+          const interval = setInterval(() => {
+            step++;
+            if (step < steps.length) setPipelineStep(step);
+            else clearInterval(interval);
+          }, 700);
+          pipelineObserver.unobserve(pipeline);
+        }
+      });
+    },
+    { threshold: 0.35 }
+  );
+
+  pipelineObserver.observe(pipeline);
+  steps.forEach((step, i) => step.addEventListener("mouseenter", () => setPipelineStep(i)));
+}
+
+// Magnetic button hover
+document.querySelectorAll(".btn").forEach((btn) => {
+  btn.addEventListener("mousemove", (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px)`;
+  });
+
+  btn.addEventListener("mouseleave", () => {
+    btn.style.transform = "";
   });
 });
 
@@ -183,6 +183,33 @@ document.querySelectorAll(".faq-item").forEach((item) => {
   });
 });
 
+// Service links → pre-fill focus area on enquiry form
+const focusSelect = document.getElementById("focus");
+
+function setFocusArea(serviceId) {
+  if (!focusSelect || !serviceId) return;
+  const option = focusSelect.querySelector(`option[value="${serviceId}"]`);
+  if (!option) return;
+  focusSelect.value = serviceId;
+  focusSelect.classList.add("prefilled");
+}
+
+document.querySelectorAll("[data-service]").forEach((link) => {
+  link.addEventListener("click", () => {
+    setFocusArea(link.dataset.service);
+    sessionStorage.setItem("rc-focus", link.dataset.service);
+  });
+});
+
+if (focusSelect) {
+  const savedFocus = sessionStorage.getItem("rc-focus");
+  if (savedFocus) setFocusArea(savedFocus);
+
+  focusSelect.addEventListener("change", () => {
+    focusSelect.classList.toggle("prefilled", focusSelect.value !== "");
+  });
+}
+
 // Contact form
 const form = document.getElementById("contact-form");
 const formNote = document.getElementById("form-note");
@@ -191,11 +218,24 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
   formNote.hidden = false;
   form.reset();
-  serviceTypeSelect?.classList.remove("prefilled");
-  sessionStorage.removeItem("pw-service");
-
+  focusSelect?.classList.remove("prefilled");
+  sessionStorage.removeItem("rc-focus");
   const btn = form.querySelector("button[type=submit]");
   btn.disabled = true;
-  btn.textContent = "Enquiry Sent";
-  stickyCall?.classList.remove("visible");
+  btn.textContent = "Request Sent";
+  stickyCta?.classList.remove("visible");
 });
+
+// Hero video performance
+const heroVideo = document.querySelector(".hero-video");
+if (heroVideo) {
+  new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) heroVideo.play().catch(() => {});
+        else heroVideo.pause();
+      });
+    },
+    { threshold: 0.1 }
+  ).observe(heroVideo);
+}
