@@ -210,21 +210,61 @@ if (focusSelect) {
   });
 }
 
-// Contact form
+// Contact form → team@rcmarketingtas.com via FormSubmit
 const form = document.getElementById("contact-form");
 const formNote = document.getElementById("form-note");
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/team@rcmarketingtas.com";
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  formNote.hidden = false;
-  form.reset();
-  focusSelect?.classList.remove("prefilled");
-  sessionStorage.removeItem("rc-focus");
-  const btn = form.querySelector("button[type=submit]");
-  btn.disabled = true;
-  btn.textContent = "Request Sent";
-  stickyCta?.classList.remove("visible");
-});
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const btn = form.querySelector("button[type=submit]");
+    const btnDefault = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+    formNote.hidden = true;
+    formNote.textContent = "Thank you — we'll be in touch shortly.";
+
+    const payload = {
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      business: form.business.value.trim(),
+      focus: form.focus.value,
+      _subject: "New website enquiry — RC Marketing",
+      _template: "table",
+      _captcha: "false",
+    };
+
+    if (payload.email) payload._replyto = payload.email;
+
+    try {
+      const response = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error("Submit failed");
+
+      formNote.hidden = false;
+      form.reset();
+      focusSelect?.classList.remove("prefilled");
+      sessionStorage.removeItem("rc-focus");
+      btn.textContent = "Request Sent";
+      stickyCta?.classList.remove("visible");
+    } catch {
+      btn.disabled = false;
+      btn.innerHTML = btnDefault;
+      formNote.textContent = "Something went wrong — please try again or email team@rcmarketingtas.com.";
+      formNote.hidden = false;
+    }
+  });
+}
 
 // Hero video performance
 const heroVideo = document.querySelector(".hero-video");
