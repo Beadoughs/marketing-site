@@ -248,7 +248,7 @@ function messageForFailedSubmit(response, data) {
     return `We could not send your enquiry (email provider error). Please email ${FORM_FALLBACK_EMAIL}.`;
   }
 
-  return `Something went wrong — please try again or email ${FORM_FALLBACK_EMAIL}.`;
+  return "Something didn't go through. Please try again or email us directly.";
 }
 
 if (form) {
@@ -262,7 +262,7 @@ if (form) {
     btn.textContent = "Sending…";
     formNote.hidden = true;
     formNote.classList.remove("form-note--error");
-    formNote.textContent = "Thank you — we'll be in touch shortly.";
+    formNote.textContent = "Thanks for reaching out. We'll be in touch shortly.";
 
     const payload = {
       name: form.name.value.trim(),
@@ -310,7 +310,7 @@ if (form) {
       form.reset();
       focusSelect?.classList.remove("prefilled");
       sessionStorage.removeItem("rc-focus");
-      btn.textContent = "Request Sent";
+      btn.textContent = "Enquiry Sent";
       stickyCta?.classList.remove("visible");
     } catch (err) {
       btn.disabled = false;
@@ -324,7 +324,7 @@ if (form) {
 
       let note =
         err.message ||
-        `Something went wrong — please try again or email ${FORM_FALLBACK_EMAIL}.`;
+        "Something didn't go through. Please try again or email us directly.";
       if (err.details && isFormDevHost()) {
         note += ` (${err.details})`;
       }
@@ -332,11 +332,11 @@ if (form) {
       formNote.classList.add("form-note--error");
       formNote.hidden = false;
 
-      if (isFormDevHost() && !form.querySelector(".form-fallback-link")) {
+      if (!form.querySelector(".form-fallback-link")) {
         const link = document.createElement("a");
         link.className = "form-fallback-link";
         link.href = FORM_MAILTO;
-        link.textContent = `Email ${FORM_FALLBACK_EMAIL} instead`;
+        link.textContent = "Email our team.";
         formNote.after(link);
       }
     }
