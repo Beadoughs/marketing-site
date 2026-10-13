@@ -262,7 +262,7 @@ if (form) {
     btn.textContent = "Sending…";
     formNote.hidden = true;
     formNote.classList.remove("form-note--error");
-    formNote.textContent = "Thanks for reaching out! We're excited to learn more about your business and will be in touch shortly.";
+    formNote.textContent = "Thanks for reaching out. We'll be in touch shortly.";
 
     const payload = {
       name: form.name.value.trim(),
