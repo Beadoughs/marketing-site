@@ -909,11 +909,20 @@ h1, h2, h3 {
 
 #advantage .tasmania-copy p,
 #advantage .tasmania-points {
-  max-width: 42rem;
+  max-width: none;
 }
 
-.advantage-lead {
-  margin-top: 0.5rem;
+.advantage-photo {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  border-radius: var(--radius-xl);
+  display: block;
+}
+
+.advantage-lead,
+#advantage .advantage-lead {
+  margin-top: 1.25rem;
   font-size: 1.0625rem;
   font-weight: 600;
   color: var(--white);
