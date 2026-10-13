@@ -914,7 +914,7 @@ h1, h2, h3 {
 
 .advantage-photo {
   width: 100%;
-  max-width: 460px;
+  max-width: 380px;
   height: auto;
   border-radius: var(--radius-xl);
   display: block;
