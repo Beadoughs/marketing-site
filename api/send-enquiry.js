@@ -5,13 +5,14 @@ const FROM_EMAIL_DEFAULT = "RC Marketing <onboarding@resend.dev>";
 const SANDBOX_FROM = "onboarding@resend.dev";
 
 const FOCUS_LABELS = {
-  "facebook-marketing": "Facebook Marketing & Growth",
+  "facebook-marketing": "Facebook Marketing",
   "social-media": "Social Media Management",
   "content-creation": "Content Creation",
-  "brand-development": "Branding & Brand Development",
+  "brand-development": "Branding",
   "website-design": "Website Design & SEO",
-  "review-strategy": "Google Reviews & Online Reputation",
+  "review-strategy": "Google Reviews",
   "ai-implementation": "AI & Marketing Strategy",
+  "not-sure": "Not Sure Yet",
 };
 
 function isDev() {

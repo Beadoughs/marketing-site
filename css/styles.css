@@ -914,6 +914,29 @@ h1, h2, h3 {
   text-shadow: var(--glow-headline);
 }
 
+#advantage .tasmania-copy p,
+#advantage .tasmania-points {
+  max-width: 42rem;
+}
+
+.advantage-lead {
+  margin-top: 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+#advantage .tasmania-points {
+  margin-top: 1rem;
+}
+
+#advantage .tasmania-points strong {
+  display: block;
+  color: var(--white);
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+
 .tasmania-visual {
   display: flex;
   justify-content: center;
@@ -1090,6 +1113,26 @@ h1, h2, h3 {
   background: var(--border-dark);
   border-radius: var(--radius-xl);
   overflow: hidden;
+}
+
+.results-showcase--quotes {
+  grid-template-columns: 1fr 1fr;
+}
+
+.work-intro {
+  max-width: 42rem;
+  margin-bottom: 1.5rem;
+}
+
+.work-intro h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.work-intro p {
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
 }
 
 .result-feature {
@@ -1269,7 +1312,7 @@ h1, h2, h3 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-  align-items: center;
+  align-items: start;
   padding: 1.5rem;
   background: var(--black-soft);
   border: 1px solid var(--border-dark);
@@ -1400,6 +1443,15 @@ h1, h2, h3 {
 
 .form-note--error {
   color: #f0a8a8;
+}
+
+.form-fallback-link {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--beige);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 /* ===== Footer ===== */
@@ -1543,7 +1595,8 @@ h1, h2, h3 {
   .pipeline-steps { grid-template-columns: repeat(3, 1fr); row-gap: 2rem; }
   .tasmania-grid, .founder-grid { grid-template-columns: 1fr; }
   .founder-visual { max-width: 400px; }
-  .results-showcase { grid-template-columns: 1fr; }
+  .results-showcase,
+  .results-showcase--quotes { grid-template-columns: 1fr; }
   .cta-panel { grid-template-columns: 1fr; }
 }
 
