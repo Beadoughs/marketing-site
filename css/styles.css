@@ -546,6 +546,30 @@ h1, h2, h3 {
   letter-spacing: -0.02em;
 }
 
+.presence-intro .presence-close {
+  margin-top: 1rem;
+  margin-bottom: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--beige);
+}
+
+.stat-source {
+  margin: 0.85rem 0 2.25rem;
+  font-size: 0.8125rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.approach-step .result-metric {
+  font-size: 1.625rem;
+  font-weight: 600;
+  color: var(--beige);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.625rem;
+}
+
 .customer-header {
   text-align: center;
   max-width: 520px;
