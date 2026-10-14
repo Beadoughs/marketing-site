@@ -5,7 +5,7 @@ const FROM_EMAIL_DEFAULT = "RC Marketing <onboarding@resend.dev>";
 const SANDBOX_FROM = "onboarding@resend.dev";
 
 const FOCUS_LABELS = {
-  "facebook-marketing": "Facebook Marketing",
+  "facebook-marketing": "Facebook Marketing & Ads",
   "social-media": "Social Media Management",
   "content-creation": "Content Creation",
   "brand-development": "Branding",
