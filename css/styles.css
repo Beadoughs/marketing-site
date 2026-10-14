@@ -694,6 +694,12 @@ h1, h2, h3 {
   gap: 0.625rem;
 }
 
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.625rem;
+}
+
 @media (min-width: 1025px) {
   .service-item:last-child { grid-column: 1 / -1; }
 }
@@ -1625,7 +1631,8 @@ h1, h2, h3 {
 
 /* ===== Responsive ===== */
 @media (max-width: 1024px) {
-  .services-grid { grid-template-columns: 1fr; }
+  .services-grid,
+  .stats-grid { grid-template-columns: 1fr; }
   .approach-grid { grid-template-columns: 1fr 1fr; }
   .presence-grid { grid-template-columns: 1fr 1fr; }
   .presence-point,
