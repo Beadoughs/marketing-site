@@ -491,6 +491,11 @@ h1, h2, h3 {
   padding: clamp(3rem, 6vw, 5rem) 0;
 }
 
+.section-customer .section-cta {
+  text-align: left;
+  margin-top: 0.25rem;
+}
+
 .presence-intro {
   max-width: 42rem;
   margin-bottom: 2rem;
