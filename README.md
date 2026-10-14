@@ -1,6 +1,6 @@
 # Raquel Cuevas Marketing
 
-Premium marketing agency website for Tasmanian businesses. Built with plain HTML, CSS, and JavaScript. Contact form submissions are sent via [Resend](https://resend.com) through a Vercel serverless API.
+Premium marketing agency website for Sydney and Australian small businesses. Built with plain HTML, CSS, and JavaScript. Contact form submissions are sent via [Resend](https://resend.com) through a Vercel serverless API.
 
 ## Sections
 
@@ -10,7 +10,7 @@ Premium marketing agency website for Tasmanian businesses. Built with plain HTML
 4. The Modern Customer
 5. Services
 6. How We Grow Businesses (interactive funnel)
-7. Tasmanian Advantage (local knowledge + map)
+7. Local Advantage (Sydney-based, personally invested)
 8. Client Results
 9. Enquiry form
 10. FAQ
@@ -92,7 +92,7 @@ If you ever proxy the API elsewhere, set in `index.html`:
 
 ## Customize
 
-- **Hero video** — Replace the Pexels source in `index.html` with your own Tasmania footage
+- **Hero video** — Replace the Pexels source in `index.html` with your own footage
 - **Founder photo** — Update `assets/raquel-cuevas.png`
 - **Case studies** — Update with real client names and metrics (with permission)
 
