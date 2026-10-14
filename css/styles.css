@@ -1021,7 +1021,7 @@ h1, h2, h3 {
   color: var(--text-muted);
   margin-bottom: 1rem;
   line-height: 1.7;
-  font-size: 1.0625rem;
+  font-size: 0.975rem;
   max-width: 40rem;
 }
 
